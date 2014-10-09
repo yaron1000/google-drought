@@ -14,8 +14,7 @@ import webapp2
 import cgi
 
 import gridmet_anomaly
-import date_utils
-
+import date_utils, form_utils
 MEDIA_URL = 'media/'
 
 jinja_environment = jinja2.Environment(
@@ -59,9 +58,25 @@ class MainPage(webapp2.RequestHandler):
     def post(self):
         """Request an image from Earth Engine and render it to a web page."""
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
+        #form_dict = dict((x,y) for x,y in self.request.get.items())
         '''Get start/end dates from user'''
         start_date = cgi.escape(self.request.get('start_date'))
         end_date = cgi.escape(self.request.get('end_date'))
+        #Check that user dataes are valid
+        form_fields_to_check = ['start_date', 'end_date']
+        '''
+        for field in form_fields_to_check:
+            checker = getattr(form_utils, 'check_' + field)
+            form_error = checker(form_dict,field)
+            if form_error:
+                template_values = {
+                    'start_date':start_date,
+                    'end_date':end_date,
+                    'form_error':form_error
+                }
+                template = jinja_environment.get_template('index.html')
+                self.response.out.write(template.render(template_values))
+        '''
         start_dt = date_utils.date_to_datetime(start_date)
         end_dt = date_utils.date_to_datetime(end_date)
 

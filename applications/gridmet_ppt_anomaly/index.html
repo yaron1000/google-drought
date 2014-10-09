@@ -7,7 +7,7 @@ for details.
 <html>
   <head>
     <title>Gridmet PPT Anomaly Map</title>
-    <link type="text/css" href="{{ MEDIA_URL }}css/google-style.css" rel="stylesheet"></link>
+    <link type="text/css" href="/stylesheets/google-style.css" rel="stylesheet"/>
     <script type="text/javascript"src="https://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript">
       /**
@@ -51,7 +51,7 @@ for details.
           streetViewControl: false
         };
 
-        var map = new google.maps.Map(document.getElementById("map"),
+        var map = new google.maps.Map(document.getElementById("gridmet-ppt-anomaly-map"),
                                       mapOptions);
         map.overlayMapTypes.push(mapType);
       }
@@ -60,22 +60,41 @@ for details.
     </script>
   </head>
   <body>
-    <table cellpadding="20px">
+  <div class="container">
+  <div class="content">
+    <table cellpadding="5px">
+    <td valign="top" width="55%">
+    </td>
+    <td valign="top" width="45%">
+    <h2 align="center">GRIDMET <br /> Precipitation Anomaly Map</h2>
+    </td>
+    </table>
+
+    <table cellpadding="5px">
     <tbody>
     <td valign="top" width="30%">
-        <div class="form">
-        <form action="#" method="post">
-        <div>Start Date: <textarea name="start_date" id="start_date" rows="1" cols="10">{{start_date}}</textarea></div>
-        <div>End Date: <textarea name="end_date" id="start_date" rows="1" cols="10">{{end_date}}</textarea></div>
-        <div><input type="submit" value="Run"></div>
+        <input type="submit" value="Start Over" onclick="window.location='#'"/>
+        <form id="gridmetForm" action="#" method="post">
+        <table class="form">
+        <tr>
+        <td>Start Date:</td>
+        <td><textarea name="start_date" id="start_date">{{start_date}}</textarea></td>
+        </tr>
+        <tr>
+        <td>End Date:</td>
+        <td><textarea name="end_date" id="start_date">{{end_date}}</textarea></td>
+        </tr>
+        </table>
+        <div><input type="submit" value="Run" name="gridmetForm"></div>
         </form>
         </div>
     </td>
     <td valign="top" width="70%">
-        <h1>Precipitation Anomaly Map from Gridmet data</h1>
-        <div id="map" style="width: 640px; height: 480px;"></div>
+        <div class="map" id="gridmet-ppt-anomaly-map"></div>
     </td>
     </tbody>
     </table>
+  </div> <!--end content-->  
+  </div> <!--end container-->
   </body>
 </html>

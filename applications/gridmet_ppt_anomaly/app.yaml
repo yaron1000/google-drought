@@ -5,14 +5,14 @@ api_version: 1
 threadsafe: true
 
 handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+
 - url: /.*
   script: ee_appengine.app
 
 - url: /oauth2callback
   script: oauth2client.appengine.application
-
-- url: /media
-  static_dir: media
 
 libraries:
 - name: jinja2

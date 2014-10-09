@@ -1,0 +1,98 @@
+body {
+    background: #00688B;
+    font-family: Verdana, sans-serif;
+}
+
+.container {
+    margin: 0 auto;
+    width: 960px;
+    min-height:1000px;
+    color:#000000;
+    background-color: #E0EEEE;
+    padding: 0px;
+    /*
+    display:table-cell;
+    height:auto;*/
+}
+
+.content {
+    position:relative;
+    top:0px;
+}
+
+
+h1,h2 {
+    font-family: Georgia,serif;
+    color: #5050aa;
+    margin: 0;
+    padding: 1px;
+}
+
+h3,h4,h5,h6 {
+    font-family: Georgia,serif;
+    color: #006666;
+    margin: 0;
+    padding: 1px;
+}
+
+p, li{
+    font-size: .9em;
+    margin-top: .5em;
+    margin-bottom: .5em;
+}
+
+table.form {
+    border:2px solid #00688B;
+    /*border-collapse:collapse;*/
+    background-color:#CCE0E0;
+    width:300px;
+    margin:0px 10px 0px 10px;
+}
+
+
+table.form td {
+    margin: 0px 0px;
+    font-weight: bold;
+    font-size:16px;
+    color:#00688B;
+}
+
+a:link { color: #0000FF;}
+a:hover {
+    color: #33CCFF;
+    text-decoration: none;
+}
+a:visited {color: #800080;}
+a:active { color:#FF0000;}
+
+textarea {
+    font-weight: bold;
+    border:1px solid #00688B;
+    background-color:#E0EEEE;
+}
+
+input[value="Run"] {
+    width:90px;
+    height:30px;
+    margin: 0px 0px 5px 10px;
+    background-color:#00688B;
+    color:#FFFFFF;
+    font-weight:bold;
+}
+
+input[value="Start Over"] {
+    width:90px;
+    height:30px;
+    margin: 0px 0px 5px 10px;
+    background-color:#00688B;
+    color:#FFFFFF;
+    font-weight:bold;
+}
+
+/* Classes */
+ 
+.map {
+    width: 600px;
+    height: 480px;
+    border:2px solid #00688B; 
+}
