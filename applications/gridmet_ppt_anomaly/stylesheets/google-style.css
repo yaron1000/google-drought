@@ -45,7 +45,7 @@ table.form {
     border:2px solid #00688B;
     /*border-collapse:collapse;*/
     background-color:#CCE0E0;
-    width:300px;
+    width:280px;
     margin:0px 10px 0px 10px;
 }
 
@@ -92,7 +92,12 @@ input[value="Start Over"] {
 /* Classes */
  
 .map {
-    width: 600px;
+    width: 630px;
     height: 480px;
     border:2px solid #00688B; 
+}
+
+.error {
+    color:red;
+    font-size:24px;
 }

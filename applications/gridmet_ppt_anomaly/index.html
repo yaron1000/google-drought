@@ -7,8 +7,17 @@ for details.
 <html>
   <head>
     <title>Gridmet PPT Anomaly Map</title>
-    <link type="text/css" href="/stylesheets/google-style.css" rel="stylesheet"/>
-    <script type="text/javascript"src="https://maps.google.com/maps/api/js?sensor=false"></script>
+    <!--CSS-->
+    <link type="text/css" href="/media/css/google-style.css" rel="stylesheet"/>
+    <!--Custom javascript to handle forms-->
+    <script type="text/javascript" src="/media/js/form_utils.js"></script>
+    <!--Google Map Api-->
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
+    <!--jquery-->
+    <!--<script type="text/javascript" src="/media/js/jquery-1.11.1-min.js"></script>-->
+    <script  src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--Calendar widget-->
+    <script type="text/javascript" src="/media/js/calendar.js"></script>
     <script type="text/javascript">
       /**
       * This page will be called from a Python script in App Engine that uses
@@ -62,35 +71,82 @@ for details.
   <body>
   <div class="container">
   <div class="content">
-    <table cellpadding="5px">
-    <td valign="top" width="55%">
-    </td>
-    <td valign="top" width="45%">
-    <h2 align="center">GRIDMET <br /> Precipitation Anomaly Map</h2>
-    </td>
-    </table>
 
-    <table cellpadding="5px">
+    <h2 align="center">GRIDMET <br /> Precipitation Anomaly Map</h2>
+
+    <table class="top">
     <tbody>
-    <td valign="top" width="30%">
-        <input type="submit" value="Start Over" onclick="window.location='#'"/>
+    <td valign="top" width="285px">
+        <table class="sub-left">
+        <tbody>
+        <td>
+        <input type="submit" value="Start Over" onclick="window.location=''">
+        <br />
+        <input type="submit" value="Run" name="gridmetForm" form="gridmetForm">
+        <td>
+        </tbody>
+        </table>
+    </td>
+    <td valign="bottom">
+        <table class="sub-left">
+        <tbody>
+        <td>
         <form id="gridmetForm" action="#" method="post">
         <table class="form">
+        <tbody>
         <tr>
-        <td>Start Date:</td>
-        <td><textarea name="start_date" id="start_date">{{start_date}}</textarea></td>
-        </tr>
+        <td>Start Date: </td>
+        <td><input type="text"id="start_date" name="start_date" value="{{start_date}}" onChange='form_utils.adjust_date("end_date",this.value);'>
+        <script type="text/javascript">calendar.set("start_date");</script>
+        </td></tr>
+        {% if form_error_start_date %}
         <tr>
-        <td>End Date:</td>
-        <td><textarea name="end_date" id="start_date">{{end_date}}</textarea></td>
+        <td colspan="2" style="color:red;font-size:12px;">{{form_error_start_date}}</td>
         </tr>
+        {% endif %}
+        <tr>
+        <td>End Date: </td>
+        <td><input type="text" id="end_date" name="end_date" value="{{end_date}}">
+        <script type="text/javascript">calendar.set("end_date");</script>
+        </td></tr>
+        {% if form_error_end_date %}
+        <tr>
+        <td colspan="2" style="color:red;font-size:12px;">{{form_error_end_date}}</td>
+        </tr>
+        {% endif %}
+        </tbody>
         </table>
-        <div><input type="submit" value="Run" name="gridmetForm"></div>
         </form>
-        </div>
+        </td>
+        </tbody>
+        </table>
     </td>
-    <td valign="top" width="70%">
-        <div class="map" id="gridmet-ppt-anomaly-map"></div>
+    <td>
+        <h2>Plot Options here!</h2>
+        {%if form_error%}
+        <div id="form_error">
+        <p class="error">
+        {% for key in form_error%}
+            key<br />
+        {% endfor %}
+        </p>
+        </div>
+        {%endif%}
+    </td>
+    </tbody>
+    </table>
+
+    <table class="main">
+    <tbody>
+    <td valign="top">
+    <table class="left">
+    <td valign="top">
+    <h2>Other Stuff here!</h2>
+    </td>
+    </table>
+    </td>
+    <td valign="top">
+    <div class="map" id="gridmet-ppt-anomaly-map"></div>
     </td>
     </tbody>
     </table>

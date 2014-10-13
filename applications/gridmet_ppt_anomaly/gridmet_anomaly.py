@@ -8,11 +8,13 @@ import os
 import config
 import ee
 
+'''
 import jinja2
 import webapp2
 
 jinja_environment = jinja2.Environment(
 	loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+'''
 
 def ppt_anomaly_func(start_dt, end_dt):
     """Calculate PPT anomalies for a given time period.

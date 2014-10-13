@@ -5,8 +5,8 @@ api_version: 1
 threadsafe: true
 
 handlers:
-- url: /stylesheets
-  static_dir: stylesheets
+- url: /media
+  static_dir: media
 
 - url: /.*
   script: ee_appengine.app
