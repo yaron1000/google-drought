@@ -33,8 +33,7 @@ jinja_environment = jinja2.Environment(
 
 
 def fix_path():
-    sys.path.append('/Users/bdaudert/Google/my-python-lib')
-    sys.path.append('/Users/bdaudert/Google/ee-lib')
+    sys.path.append('my-python-lib')
 
 def check_form(form, fields_to_check):
     '''

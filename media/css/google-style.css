@@ -1,72 +1,29 @@
-/************************************************/
-/* style.css                    */
-/* Define the way things look           */
-/************************************************/
 body {
-    height:100%
-    background: white ;
+    background: #00688B;
     font-family: Verdana, sans-serif;
-    font-size: 90%;
-    margin: 0;
-    padding: 0;
 }
 
-
-p, li{
-    font-size: .9em;
-    margin-top: .5em;
-    margin-bottom: .5em;
+.container {
+    margin: 0 auto;
+    width: 960px;
+    min-height:1000px;
+    color:#000000;
+    background-color: #E0EEEE;
+    padding: 0px;
+    /*
+    display:table-cell;
+    height:auto;*/
 }
 
-pre.code {
-    /*border:1px solid grey;*/
-    width:800px;
-    background-color:LightGrey;
+.content {
+    position:relative;
+    top:0px;
 }
 
-table, tr, th{
-    border:0px solid white;
-    text-align:right;
-
-}
-
-.navbar {
-    width:100%;
-    text-align:left;
-    border: 1px solid blue;
-    background-color:#79BAEC;
-    color:#EDAB79;
-}
-
-ul.navbar {
-  list-style-type: none;
-  padding: 0.5em;
-  margin: 0;
-  top: 1em;
-  left: 5em;
-  width: 20em;
-}
-
-ul.navbar li {
-  width:160px;
-  background: #33ccff;
-  margin: 0.5em;
-  padding: 0.3em;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
-  border-right: 1px solid #000;
-  border-left: 1px solid #000; }
-
-ul.navbar a {
-  display:block;
-  width:150px;
-  color:#0000FF;
-  background-color: #ccffff;
-  text-decoration: none ; }
 
 h1,h2 {
     font-family: Georgia,serif;
-    color: #5050aa;
+    color: #00688B;
     margin: 0;
     padding: 1px;
 }
@@ -78,38 +35,67 @@ h3,h4,h5,h6 {
     padding: 1px;
 }
 
-h1 {
-    font-size: 2em;
-    margin-top: 1em;
+p, li{
+    font-size: .9em;
+    margin-top: .5em;
     margin-bottom: .5em;
 }
 
-h2 {
-    font-size: 1.5em;
-    margin-top: 1em;
-    margin-bottom: .5em;
+table.form {
+    border:3px solid #00688B;
+    background-color:#CCE0E0;
+    width:280px;
+    margin:0px 10px 0px 10px;
 }
 
-h3 {
-    font-size: 1.2em;
-    margin-top: 1em;
-    margin-bottom: .5em;
+
+table.form td {
+    margin: 0px 0px;
+    font-weight: bold;
+    font-size:16px;
+    color:#00688B;
 }
 
-h2, h3 {
-    letter-spacing: .04em;
-    border-bottom: 1px solid #dad0d2;
+table.sub-left {
+    border-right:3px solid #00688B;
+    background-color:#CCE0E0;
+    width:285px;
+    height:100px;
+    margin:0px;
+    padding:0px;
 }
 
-h4,h5 {
-    font-size: 1em;
-    padding-left: 1em;
-    margin-top: 1em;
-    margin-bottom: .5em;
+table.sub-mid {
+    border-right:3px solid #00688B;
+    border-left:3px solid #00688B;
+    background-color:#CCE0E0;
+    width:285px;
+    height:100px;
+    margin:0px 0px 0px 5px;
+    padding:0px;
+}
+
+table.top {
+    border:3px solid #00688B;
+    background-color:#CCE0E0;
+    margin:0px 5px 0px 5px;
+    width:947px;
+}
+
+table.left {
+    border:3px solid #00688B;
+    background-color:#CCE0E0;
+    margin:0px 0px 0px 3px;
+    width:290px;
+    min-height:485px;
+    padding:5px
+}
+
+table.main td{
+    padding:0px;
 }
 
 a:link { color: #0000FF;}
-/*a:visited { color: #660099; }*/
 a:hover {
     color: #33CCFF;
     text-decoration: none;
@@ -117,86 +103,92 @@ a:hover {
 a:visited {color: #800080;}
 a:active { color:#FF0000;}
 
-/*Inputs*/
+input[type="text"]{
+    font-weight: bold;
+    border:1px solid #00688B;
+    background-color:#E0EEEE;
+}
+
 input[value="Run"] {
+    width:90px;
+    height:30px;
+    margin: 0px 0px 5px 10px;
     background-color:#00688B;
-    color:#000000;
-    margin:10px;
+    color:#FFFFFF;
+    font-weight:bold;
 }
 
-/*Classes*/
-.form {
-    border:2px solid #00688B;
-    /*border-collapse:collapse;*/
-    background-color:#C3E4ED;
-    color: #000000;
-    width:300px;
-    margin:0px 10px 0px 10px;
+input[value="Start Over"] {
+    width:90px;
+    height:30px;
+    margin: 0px 0px 5px 10px;
+    background-color:#00688B;
+    color:#FFFFFF;
+    font-weight:bold;
 }
 
-/*Ids*/
-
-#content {
-    margin: 0 1em;
-    padding: 0;
-}
-#center {
-    padding: 0;
-    z-index: -1;
-}
-#left {
-    padding: 2px;
-    background: transparent;
-}
-#right {
-    background: transparent;
-    padding: 2px;
-    padding-top: 1.5em;
-}
-#footer {
-    border-top: 1px dashed #ddd;
-    margin: 1em 0;
-    padding: 1em;
-}
-#footer p {
-    margin: 0 0 2px 0;
-    text-align: center;
-    font-size: .7em;
-}
-#header {
-    background: #99bacf ;
-    padding: 2em;
-}
-#header h1,
-#header h2,
-#header h3 {
-    color: #092a3f;
-    border: none;
-    background: none;
-    font-family: 'Georgia',serif;
-    margin: 0em;
-}
-#header p {
-    font-family: Verdana,Arial,sans-serif; 
-    font-size: .8em;
-    color:#aab;
-    text-align: center;
-}
-#breadcrumbs {
-    background: #99aabf;
-    color: #1E90FF;
-    padding: .10em 1em;
+/* Classes */
+ 
+.map {
+    margin:0px 5px 0px 0px;
+    width: 650px;
+    height: 480px;
+    border:3px solid #00688B; 
 }
 
 
-/* Testing popup on same page in my_apps/home.html, may need to be delete*/
-#popUpDiv {
+.error {
+    color:#FF0000;
+    font-size:24px;
+}
+
+/*Calendar widget
+http://www.openjs.com/scripts/ui/calendar/
+*/
+.calendar-box {
+    display:none;
+    background-color:#E0EEEE;
+    border:1px solid #00688B;
     position:absolute;
-    background-color:#eeeeee;
-    width:300px;
-    height:300px;
-    z-index: 9002;
-    position: absolute;
-    top: 12em;
-    left: 15em;
+    width:250px;
+    padding: 0 5px;
+    z-index:10;
 }
+.calendar-box select.calendar-month {
+    width:90px;
+    background-color:#00688B;
+    color:#FFFFFF;
+}
+.calendar-box select.calendar-year {
+    width:70px;
+    background-color:#00688B;
+    color:#FFFFFF;
+}
+.calendar-box .calendar-cancel {
+    width:100%;
+    background-color:#00688B;
+    color:#FFFFFF;
+}
+.calendar-box table td {
+    width:14%;
+}
+.calendar-box .calendar-title {
+    text-align:center;
+}
+.calendar-box a {
+    text-decoration:none;
+    color:#00688B;
+}
+.calendar-box .today a {
+    padding:0 5px;
+    margin-left:-5px;
+    background-color:#828282;
+    border: 1px solid #00688B;
+} 
+.calendar-box .selected a {
+    padding:0 5px;
+    margin-left:-5px;
+    background-color:#fff;
+    border: 1px solid #00688B;
+}
+

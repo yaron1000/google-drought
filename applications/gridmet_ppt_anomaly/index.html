@@ -96,7 +96,9 @@ for details.
         <tbody>
         <tr>
         <td>Start Date: </td>
-        <td><input type="text"id="start_date" name="start_date" value="{{start_date}}" onChange='form_utils.adjust_date("end_date",this.value);'>
+        <!--
+        <td><input type="text"id="start_date" name="start_date" value="{{start_date}}" onChange='form_utils.adjust_date("end_date",this.value);'>-->
+        <td><input type="text"id="start_date" name="start_date" value="{{start_date}}">
         <script type="text/javascript">calendar.set("start_date");</script>
         </td></tr>
         {% if form_error_start_date %}
