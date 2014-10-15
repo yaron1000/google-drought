@@ -1,18 +1,6 @@
 #!/opt/local/bin/python
 import datetime
 
-def is_leap_year(year):
-    '''
-    Check if year is leap year.
-    '''
-    yr = int(year)
-    if yr % 100 != 0 and yr % 4 == 0:
-        return True
-    elif yr % 100 == 0 and yr % 400 == 0:
-        return True
-    else:
-        return False
-
 def set_back_date(days_back):
     '''
     Calculates today - days_back
