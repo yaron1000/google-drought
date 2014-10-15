@@ -1,5 +1,6 @@
 #!/opt/local/bin/python
 import datetime
+import re
 
 def set_back_date(days_back):
     '''
@@ -30,30 +31,20 @@ def date_to_datetime(date_str):
     to datetime. The datetime object is returned
     '''
     eight_date = date_str.replace('-','').replace('/','').replace(':','')
-    if len(eight_date) != 8:
+    date_re = re.compile('(\d{4})(\d{2})(\d{2})$')
+    try:
+        return datetime.datetime(*map(int, date_re.match(eight_date).groups()))
+    except AttributeError:
         return None
-    dt = datetime.datetime(int(eight_date[0:4]),int(eight_date[4:6]), int(eight_date[6:8]))
-    return dt
 
-def datetime_to_date(dt, seperator):
+def datetime_to_date(dt, separator):
     '''
     yyyy-mm-dd
     yyyy/mm/dd
     yyyy:mm:dd
     yyyymmdd
     '''
-    if type(dt) != datetime.datetime:
-        return '0000' + str(seperator) + '00' + str(seperator) + '00'
-    try:y = str(dt.year)
-    except:y = '0000'
     try:
-        m =str(dt.month)
-        if len(m) ==1:m = '0' + m
-    except:
-        m = '00'
-    try:
-        d =str(dt.day)
-        if len(d) ==1:d = '0' + m
-    except:
-        d = '00'
-    return y + str(seperator) + m + str(seperator) + d
+        return dt.strftime('%Y{0}%m{0}%d'.format(separator))
+    except AttributeError:
+        return '0000{0}00{0}00'.format(separator)
