@@ -1,36 +1,18 @@
 #!/opt/local/bin/python
 import datetime
+import re
 
-def is_leap_year(year):
-    '''
-    Check if year is leap year.
-    '''
-    yr = int(year)
-    if yr % 100 != 0 and yr % 4 == 0:
-        return True
-    elif yr % 100 == 0 and yr % 400 == 0:
-        return True
-    else:
-        return False
-
-def set_back_date(days_back):
+def set_back_date(days_back=28):
     '''
     Calculates today - days_back
-    and returns the back date in format
-    yyyymmdd
+    and returns the back date in format yyyymmdd
+    Default is 4 weeks (28 days) back
     '''
     try:
-        int(days_back)
-    except:
+        back_dt = datetime.datetime.today() - datetime.timedelta(days=int(days_back))
+        return back_dt.strftime('%Y%m%d')
+    except ValueError:
         return '99990101'
-    tdy = datetime.datetime.today()
-    #Choose default start_date 4 weeks back
-    b = datetime.datetime.today() - datetime.timedelta(days=int(days_back))
-    yr_b = str(b.year);mon_b = str(b.month);day_b = str(b.day)
-    if len(mon_b) == 1:mon_b = '0%s' % mon_b
-    if len(day_b) == 1:day_b = '0%s' % day_b
-    back_date = '%s-%s-%s' % (yr_b, mon_b, day_b)
-    return back_date
 
 def date_to_datetime(date_str):
     '''
@@ -42,30 +24,20 @@ def date_to_datetime(date_str):
     to datetime. The datetime object is returned
     '''
     eight_date = date_str.replace('-','').replace('/','').replace(':','')
-    if len(eight_date) != 8:
+    date_re = re.compile('(\d{4})(\d{2})(\d{2})$')
+    try:
+        return datetime.datetime(*map(int, date_re.match(eight_date).groups()))
+    except AttributeError:
         return None
-    dt = datetime.datetime(int(eight_date[0:4]),int(eight_date[4:6]), int(eight_date[6:8]))
-    return dt
 
-def datetime_to_date(dt, seperator):
+def datetime_to_date(dt, separator):
     '''
     yyyy-mm-dd
     yyyy/mm/dd
     yyyy:mm:dd
     yyyymmdd
     '''
-    if type(dt) != datetime.datetime:
-        return '0000' + str(seperator) + '00' + str(seperator) + '00'
-    try:y = str(dt.year)
-    except:y = '0000'
     try:
-        m =str(dt.month)
-        if len(m) ==1:m = '0' + m
-    except:
-        m = '00'
-    try:
-        d =str(dt.day)
-        if len(d) ==1:d = '0' + m
-    except:
-        d = '00'
-    return y + str(seperator) + m + str(seperator) + d
+        return dt.strftime('%Y{0}%m{0}%d'.format(separator))
+    except AttributeError:
+        return '0000{0}00{0}00'.format(separator)

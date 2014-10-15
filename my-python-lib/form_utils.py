@@ -1,3 +1,4 @@
+import calendar
 import date_utils
 import datetime
 
@@ -24,7 +25,7 @@ def check_start_date(form):
 
 
     #Check for leap year issue
-    if not date_utils.is_leap_year(date[0:4]) and date[4:6] == '02' and date[6:8] == '29':
+    if not calendar.isleap(int(date[0:4])) and date[4:6] == '02' and date[6:8] == '29':
         return '%s is not a leap year. Change start date to February 28.' %date[0:4]
 
     #Check that start date is earlier than end date
@@ -63,7 +64,7 @@ def check_end_date(form):
 
 
     #Check for leap year issue
-    if not date_utils.is_leap_year(date[0:4]) and date[4:6] == '02' and date[6:8] == '29':
+    if not calendar.isleap(int(date[0:4])) and date[4:6] == '02' and date[6:8] == '29':
         return '%s is not a leap year. Change start date to February 28.' %date[0:4]
 
     #Check that start date is earlier than end date
