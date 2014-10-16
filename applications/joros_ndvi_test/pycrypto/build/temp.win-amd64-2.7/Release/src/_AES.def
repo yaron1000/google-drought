@@ -1,3 +1,0 @@
-LIBRARY _AES.pyd
-EXPORTS
-init_AES

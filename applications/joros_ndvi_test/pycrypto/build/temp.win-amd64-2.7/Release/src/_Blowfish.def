@@ -1,3 +1,0 @@
-LIBRARY _Blowfish.pyd
-EXPORTS
-init_Blowfish

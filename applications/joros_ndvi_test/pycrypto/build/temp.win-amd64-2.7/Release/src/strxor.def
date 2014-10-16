@@ -1,3 +1,0 @@
-LIBRARY strxor.pyd
-EXPORTS
-initstrxor
