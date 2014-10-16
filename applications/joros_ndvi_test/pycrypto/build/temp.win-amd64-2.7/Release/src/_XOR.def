@@ -1,0 +1,3 @@
+LIBRARY _XOR.pyd
+EXPORTS
+init_XOR
