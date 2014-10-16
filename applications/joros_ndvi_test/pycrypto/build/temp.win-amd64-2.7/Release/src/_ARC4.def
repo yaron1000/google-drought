@@ -1,0 +1,3 @@
+LIBRARY _ARC4.pyd
+EXPORTS
+init_ARC4

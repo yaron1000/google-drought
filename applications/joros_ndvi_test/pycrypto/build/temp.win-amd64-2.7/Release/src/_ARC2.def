@@ -1,0 +1,3 @@
+LIBRARY _ARC2.pyd
+EXPORTS
+init_ARC2
