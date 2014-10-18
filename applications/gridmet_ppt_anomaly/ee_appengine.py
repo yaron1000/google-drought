@@ -14,6 +14,11 @@ import webapp2
 import cgi
 
 #Custom modules
+'''
+from my_python_lib import date_utils
+from my_python_lib import form_utils
+from my_python_lib import gridmet_anomaly
+'''
 import gridmet_anomaly
 import date_utils, form_utils
 #media url containing js/css/img
@@ -21,19 +26,12 @@ import date_utils, form_utils
 MEDIA_URL = 'media/'
 
 
-#Note appengine uses djang 0.96
-#that does not support dict.items call in template
-#This is a fx I found online
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-from google.appengine.dist import use_library
-use_library('django', '1.2')
-
 jinja_environment = jinja2.Environment(
 	loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 
 def fix_path():
-    sys.path.append('my-python-lib')
+    sys.path.append('/Users/bdaudert/my-python-lib')
 
 def check_form(form, fields_to_check):
     '''
@@ -53,8 +51,8 @@ class MainPage(webapp2.RequestHandler):
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 
         '''Set default start and end date'''
-        start_date = date_utils.set_back_date(296)
-        end_date = date_utils.set_back_date(296 - 7)
+        start_date = date_utils.set_back_date(14)
+        end_date = date_utils.set_back_date(7)
         start_dt = date_utils.date_to_datetime(start_date)
         end_dt = date_utils.date_to_datetime(end_date)
         #start_dt = dt.datetime(2013, 12, 15)

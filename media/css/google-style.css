@@ -87,7 +87,7 @@ table.left {
     background-color:#CCE0E0;
     margin:0px 0px 0px 3px;
     width:290px;
-    min-height:485px;
+    height:485px;
     padding:5px
 }
 
@@ -128,7 +128,16 @@ input[value="Start Over"] {
 }
 
 /* Classes */
- 
+.gradient {
+    width: 958px;
+    color:#800000;
+    background-color:#00688B;
+    background-image: -webkit-linear-gradient(top, #00688B, #E0EEEE);
+    background-image: -ms-linear-gradient(top, #00688B, #E0EEEE); 
+    background-image: -o-linear-gradient(top, #00688B, #E0EEEE);
+    background-image: -moz-linear-gradient(top, #00688B, #E0EEEE);
+}
+
 .map {
     margin:0px 5px 0px 0px;
     width: 650px;
@@ -192,3 +201,14 @@ http://www.openjs.com/scripts/ui/calendar/
     border: 1px solid #00688B;
 }
 
+/*Ids*/
+#loading {
+  width: 100%;
+  height: 100%;
+  top: 100px;
+  left: 100px;
+  position: fixed;
+  display: block;
+  z-index: 99;
+  text-align: center;
+}

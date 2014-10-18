@@ -9,14 +9,13 @@ for details.
     <title>Gridmet PPT Anomaly Map</title>
     <!--CSS-->
     <link type="text/css" href="/media/css/google-style.css" rel="stylesheet"/>
-    <!--Custom javascript to handle forms-->
+    <!--Custom javascript-->
     <script type="text/javascript" src="/media/js/form_utils.js"></script>
+    <script type="text/javascript" src="/media/js/jutils.js"></script>
     <!--Google Map Api-->
     <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
     <!--jquery-->
-    <!--<script type="text/javascript" src="/media/js/jquery-1.11.1-min.js"></script>-->
-    <script  src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!--Calendar widget-->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="/media/js/calendar.js"></script>
     <script type="text/javascript">
       /**
@@ -71,8 +70,12 @@ for details.
   <body>
   <div class="container">
   <div class="content">
+    
+    <h2 align="center" class="gradient">GRIDMET <br /> Precipitation Anomaly Map</h2>
 
-    <h2 align="center">GRIDMET <br /> Precipitation Anomaly Map</h2>
+    <div id="loading" style="display:none;">
+        <img id="loading-image" src="media/img/LoadingGreen.gif" alt="Loading..." />
+    </div> 
 
     <table class="top">
     <tbody>
@@ -91,7 +94,7 @@ for details.
         <table class="sub-left">
         <tbody>
         <td>
-        <form id="gridmetForm" action="#" method="post">
+        <form id="gridmetForm" action="#" method="post" onsubmit="jutils.show_loading()">
         <table class="form">
         <tbody>
         <tr>

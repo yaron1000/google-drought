@@ -8,6 +8,9 @@ handlers:
 - url: /media
   static_dir: media
 
+- url: /my-python-lib
+  static_dir: my-python-lib
+
 - url: /.*
   script: ee_appengine.app
 

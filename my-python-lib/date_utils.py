@@ -10,9 +10,9 @@ def set_back_date(days_back=28):
     '''
     try:
         back_dt = datetime.datetime.today() - datetime.timedelta(days=int(days_back))
-        return back_dt.strftime('%Y%m%d')
+        return back_dt.strftime('%Y-%m-%d')
     except ValueError:
-        return '99990101'
+        return '9999-01-01'
 
 def date_to_datetime(date_str):
     '''
