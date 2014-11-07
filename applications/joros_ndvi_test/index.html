@@ -141,13 +141,13 @@ for details.
                   <input type="text" value="1" name="factor">
                   <br> -->
                   <label for="from">Start Date</label>
-                  <input type="text" id="from" value="2013-04-01" name="startdate">
+                  <input type="text" id="from" value="{{ startdate }}" name="startdate">
                   <br>
                   <label for="to">End Date</label>
-                  <input type="text" id="to" value="2013-07-01" name="enddate">
+                  <input type="text" id="to" value="{{ enddate }}" name="enddate">
                   <br>
                   <label for="from">Lon, Lat</label>
-                  <input id="UserLatLong" name="UserLatLong" value="-119.8219,39.5272" />
+                  <input id="UserLatLong" name="UserLatLong" value="{{ UserLatLong }}" />
                   <p>
                     <b>Pressing "Run NDVI" computes mean, median, max, and, min NDVI for Longitude/Latitude coordinate</b>
                   <p>

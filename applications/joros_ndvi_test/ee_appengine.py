@@ -159,6 +159,7 @@ class MainPage(webapp2.RequestHandler):
         
         #### Grabs data from "name" in the HTML form tags
         # factor = float(cgi.escape(self.request.get('factor')))
+        # startdate = cgi.escape(self.request.get('startdate'))
         startdate = cgi.escape(self.request.get('startdate'))
         enddate = cgi.escape(self.request.get('enddate'))
         UserLatLong = cgi.escape(self.request.get('UserLatLong'))
