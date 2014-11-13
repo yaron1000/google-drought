@@ -321,32 +321,30 @@ class Timeseries(webapp2.RequestHandler):
             # extract = list(zip(*extract)[4])
             # for sublist in extract:
                 # del sublist[3]
-            time_list = [row[3] for row in extract]
-            ndvilist = [row[4] for row in extract]        
+            ##time_list = [row[3] for row in extract]
+            ##ndvilist = [row[4] for row in extract]        
             # time_list = [datetime.datetime.strptime(x, "%Y%m%d").strftime("%Y,%m,%d") for x in time_list]
-            temp_arr = zip(time_list,ndvilist)
-            newarray=[['Dates','NDVI']]
-            for x in temp_arr:
-                if x[1] is not None:
-                    newarray.append([x[0],x[1]])
+            ##temp_arr = zip(time_list,ndvilist)
+            ##temp_arr = [(row[3], row[4]) for row in extract]
 
             #### CREATE TIME SERIES ARRAY WITH DATE IN COL 1 AND VALUE IN COL 2
-            TimeSeries_array = []
-            for j in range(0,len(extract),1):
-                time_ms = (ee.Algorithms.Date(extract[j][3])).getInfo()['value']
-                # data11 = data1['value']
-                # data1 = time.strftime('%m/%d/%Y',  time.gmtime(time_ms/1000))
-                data1 = int(time_ms)
-                print data1
-                print type(data1)
-                data2 = (extract[j][4])
-                print data2
-                if data2 is not None:
-                    TimeSeries_array.append([data1,data2])
+            TimeSeries_list = []
+            for ftr in extract:
+                print ftr[3]
+                print type(ftr[3])
+                print ftr[4]
+                print type(ftr[4])
+                ##if ftr[4] is not None:
+                ##    TimeSeries_list.append([int(ftr[3]), float(ftr[4])])
+                try:
+                    TimeSeries_list.append([int(ftr[3]), float(ftr[4])])
+                except (TypeError, ValueError) as e:
+                    pass
 
             #### SORT IN CHRONOLOGICAL ORDER
             # TimeSeries_array.sort(key=lambda date: datetime.datetime.strptime(date[0], "%m/%d/%Y"))
-            TimeSeries_array.sort(key = lambda col: col[0])
+            ##TimeSeries_list.sort(key = lambda col: col[0])
+            TimeSeries_list.sort()
 
             #### ADD HEADER TO SORTED LIST 
             # TimeSeries_array = [['Dates','NDVI']] + TimeSeries_array
