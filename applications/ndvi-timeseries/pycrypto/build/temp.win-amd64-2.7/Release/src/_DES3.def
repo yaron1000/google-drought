@@ -1,0 +1,3 @@
+LIBRARY _DES3.pyd
+EXPORTS
+init_DES3

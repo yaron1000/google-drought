@@ -1,0 +1,3 @@
+LIBRARY _MD2.pyd
+EXPORTS
+init_MD2

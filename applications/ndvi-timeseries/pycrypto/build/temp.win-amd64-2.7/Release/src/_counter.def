@@ -1,0 +1,3 @@
+LIBRARY _counter.pyd
+EXPORTS
+init_counter
