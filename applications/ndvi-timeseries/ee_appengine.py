@@ -13,7 +13,7 @@ import time
 import ee
 import jinja2
 import webapp2
-import numpy
+import time
 import sys
 import json
 
@@ -243,10 +243,11 @@ MAIN_PAGE_HTML = """<html>
   </body> 
 </html>
 """
-
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.write(MAIN_PAGE_HTML)          
+        self.response.write(MAIN_PAGE_HTML)      
+        # UserLatLongValue = self.request.get('lat_lon_string')    
+        # print(UserLatLongValue)
         # pylint: disable=g-bad-name
         # """Request an image from Earth Engine and render it to a web page."""
         # ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
@@ -255,37 +256,37 @@ class MainPage(webapp2.RequestHandler):
         # These could be put directly into template.render, but it
         # helps make the script more readable to pull them out here, especially
         # if this is expanded to include more variables.
-        # template_values = {
-        #     'mapid': mapid['mapid'],
-        #     'token': mapid['token']
+        # template_values = {            
+        #    'UserLatLongValue': UserLatLongValue
         # }
         # template = jinja_environment.get_template('index.html')
-        # self.response.out.write(template.render(template_values))
+        # self.response.write(template.render(template_values))
 
         #### A function to compute NDVI for a Landsat image.
 
 class Timeseries(webapp2.RequestHandler):
     def post(self):
+
         """Request an image from Earth Engine and render it to a web page."""
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
-        
+
         #### Grabs data from "name" in the HTML form tags
         # factor = float(cgi.escape(self.request.get('factor')))
         # startdate = cgi.escape(self.request.get('startdate'))
-        startdate = '2011-01-01'
-        enddate = '2011-03-31'
+        startdate = '2012-01-01'
+        enddate = '2012-12-30'
 
         ##GRABS THE LAT LONG STRING FROM HTML FORM
         UserLatLong = cgi.escape(self.request.get('lat_lng_string'))
         print(UserLatLong)
         UserLatLongX = UserLatLong.split(",")
-        print(UserLatLongX)
+        # print(UserLatLongX)
 
         #TURN EACH STRING IN LIST TO A FLOAT FOR LAT,LONG
         UserLat = map(float,UserLatLongX[0::2])
         UserLong = map(float,UserLatLongX[1::2])
 
-        print(UserLat)
+        # print(UserLat)
         # lat_lon_tuple = zip(UserLatLongX[0::2], UserLatLongX[1::2])
         # print(lat_lon_tuple)
 
@@ -330,10 +331,10 @@ class Timeseries(webapp2.RequestHandler):
             #### CREATE TIME SERIES ARRAY WITH DATE IN COL 1 AND VALUE IN COL 2
             TimeSeries_list = []
             for ftr in extract:
-                print ftr[3]
-                print type(ftr[3])
-                print ftr[4]
-                print type(ftr[4])
+                # print ftr[3]
+                # print type(ftr[3])
+                # print ftr[4]
+                # print type(ftr[4])
                 ##if ftr[4] is not None:
                 ##    TimeSeries_list.append([int(ftr[3]), float(ftr[4])])
                 try:
@@ -373,12 +374,13 @@ class Timeseries(webapp2.RequestHandler):
             # mapid = image_coll_ndvi_mrg_L5L7L8.median().getMapId(viz_params)
             temp_dict = {}
             temp_dict['name'] = str(float(UserLat[i])) + ',' + str(float(UserLong[i]))
-            temp_dict['data'] = TimeSeries_array
+            temp_dict['data'] = TimeSeries_list
             master_dict.append(temp_dict)
         
         master_dict_json = json.dumps(master_dict)
+        
+        # print master_dict_json
 
-        print master_dict_json
 
         template_values = {
             # 'mapid': mapid['mapid'],
@@ -390,14 +392,12 @@ class Timeseries(webapp2.RequestHandler):
             # 'minNDVIvalue': minNDVI,
             # 'mapid': mapid['mapid'],
             # 'token': mapid['token'],
+            'UserLatLongValue': UserLatLong,
             'TimeSeries_array': master_dict_json
         }
         template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(template_values))
-
-
-
-
+        self.response.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/timeseries',Timeseries)], debug=True)
+

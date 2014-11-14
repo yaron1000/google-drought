@@ -244,9 +244,10 @@
   <body>
       <div id="wrapper">
         <div id="menu">
-          <form id="NDVI_Form" action="/timeseries" method="post" > 
-          Lat/Lons: <input size="80" type="text" name='lat_lng_string' id="lat_lng_string" value="" /></form>
-          <input type="submit" class="button" value="Get NDVI Time Series for Marker Locations" name="gridmetForm" form="NDVI_Form" />
+          <form id="NDVI_Form" action="/timeseries" method="post" >
+            Lat/Lons: <input size="80" type="text" name='lat_lng_string' id="lat_lng_string" value="{{ UserLatLongValue }}" />
+            <input type="submit" class="button" value="Get NDVI Time Series for Marker Locations" name="gridmetForm" form="NDVI_Form" />
+            </form>
         </div>
         <div id="map-canvas"></div>
         <div id="chart_div"></div>
