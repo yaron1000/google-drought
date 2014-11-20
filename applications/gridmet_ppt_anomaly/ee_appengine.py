@@ -19,8 +19,9 @@ from my_python_lib import date_utils
 from my_python_lib import form_utils
 from my_python_lib import gridmet_anomaly
 '''
+
 import gridmet_anomaly
-import date_utils, form_utils
+import date_utils, form_utils, graph_utils
 #media url containing js/css/img
 #Note: needs to be added to app.yaml
 MEDIA_URL = 'media/'
@@ -58,20 +59,33 @@ class MainPage(webapp2.RequestHandler):
         #start_dt = dt.datetime(2013, 12, 15)
         #end_dt = dt.datetime(2013, 12, 31)
         index_image = gridmet_anomaly.ppt_anomaly_func(start_dt, end_dt)
-
-        ## Set color scheme before returning
-        mapid = index_image.getMapId({'min':-2.0, 'max':2.0, 'palette':"0000FF,FFFFFF,FF0000"})
+        #Find max/min over all pixels for map legend generation
+        wusa = [[-125,24],[-125,50],[-66,24],[-66, 50]]
+        reduce_args = {
+            'reducer': ee.Reducer.max(),
+            'bestEffort': True,
+            'geometry': ee.Feature.Polygon(wusa),
+            'scale':4000
+        }
+        reduce_args['reducer'] = ee.Reducer.max()
+        mx = index_image.reduceRegion(**reduce_args).getInfo()['PPT']
+        reduce_args['reducer'] = ee.Reducer.min()
+        mn = index_image.reduceRegion(**reduce_args).getInfo()['PPT']
+        palette = '0000FF,00FF00,FFFF00,FF0000' #Blue/Green/Yellow/Red
+        mapid = index_image.getMapId({'min':mn, 'max':mx, 'palette':palette})
+        #graph_utils.colorbar_func('', palette=palette, min_value=mn, max_value=mx)
         # These could be put directly into template.render, but it
         # helps make the script more readable to pull them out here, especially
         # if this is expanded to include more variables.
-
         template_values = {
                 'MEDIA_URL':MEDIA_URL,
                 'mapid': mapid['mapid'],
                 'token': mapid['token'],
                 'start_date':start_date,
-                'end_date':end_date
-
+                'end_date':end_date,
+                'max':mx,
+                'min':mn,
+                'palette':palette
         }
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(template_values))
@@ -105,9 +119,21 @@ class MainPage(webapp2.RequestHandler):
             end_dt = date_utils.date_to_datetime(end_date)
 
             index_image = gridmet_anomaly.ppt_anomaly_func(start_dt, end_dt)
-
+            #Find max/min over all pixels for map legend generation
+            wusa = [[-125,24],[-125,50],[-66,24],[-66, 50]]
+            reduce_args = {
+                'reducer': ee.Reducer.max(),
+                'bestEffort': True,
+                'geometry': ee.Feature.Polygon(wusa),
+                'scale':4000
+            }
+            reduce_args['reducer'] = ee.Reducer.max()
+            mx = index_image.reduceRegion(**reduce_args).getInfo()['PPT']
+            reduce_args['reducer'] = ee.Reducer.min()
+            mn = index_image.reduceRegion(**reduce_args).getInfo()['PPT']
             ## Set color scheme before returning
-            mapid = index_image.getMapId({'min':-2.0, 'max':2.0, 'palette':"0000FF,FFFFFF,FF0000"})
+            palette = '0000FF,00FF00,FFFF00,FF0000' #Blue/Green/Yellow/Red
+            mapid = index_image.getMapId({'min':mx, 'max':mn, 'palette':palette})
             # These could be put directly into template.render, but it
             # helps make the script more readable to pull them out here, especially
             # if this is expanded to include more variables.
@@ -116,8 +142,10 @@ class MainPage(webapp2.RequestHandler):
                 'mapid': mapid['mapid'],
                 'token': mapid['token'],
                 'start_date':start_date,
-                'end_date':end_date
-
+                'end_date':end_date,
+                'max':mx,
+                'min':mn,
+                'palette':palette
             }
         template = jinja_environment.get_template('index.html')
         self.response.out.write(template.render(template_values))
