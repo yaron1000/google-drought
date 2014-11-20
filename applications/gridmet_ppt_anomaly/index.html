@@ -130,7 +130,8 @@ for details.
     <td>
         <h3>Click to see data values!</h4>
         <canvas width="320" height="30" id="colorbar"></canvas>
-        <script type="text/javascript">set_color_bar("{{min}}","{{max}}","{{palette}}")</script>
+        <!--<script type="text/javascript">set_color_bar("{{min}}","{{max}}","{{palette}}")</script>-->
+        <script type="text/javascript">graph_utils.set_color_bar("{{min}}","{{max}}","{{palette}}")</script>
         {%if form_error%}
         <div id="form_error">
         <p class="error">
