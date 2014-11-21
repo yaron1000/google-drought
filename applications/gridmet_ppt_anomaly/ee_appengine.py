@@ -1,154 +1,57 @@
-"""A simple example of connecting to Earth Engine using App Engine."""
+#!/usr/bin/python
+import logging
+try:
+    import webapp2
+except:
+    logging.exception("no webapp")
+import pprint
+import os
+import StringIO
+os.environ["MATPLOTLIBDATA"] = os.getcwdu()
+os.environ["MPLCONFIGDIR"] = os.getcwdu()
+import subprocess
+def no_popen(*args, **kwargs): raise OSError("forbjudet")
+subprocess.Popen = no_popen
+subprocess.PIPE = None
+subprocess.STDOUT = None
+logging.warn("E: %s" % pprint.pformat(os.environ))
+try:
+    import numpy, matplotlib, matplotlib.pyplot as plt
+except:
+    logging.exception("trouble")
 
-# Works in the local development environment and when deployed.
-# If successful, shows a single web page with the SRTM DEM
-# displayed in a Google Map.  See accompanying README file for
-# instructions on how to set up authentication.
+def dynamic_png():
+    try:
+        plt.title("Dynamic PNG")
+        for i in range(5): plt.plot(sorted(numpy.random.randn(25)))
+        rv = StringIO.StringIO()
+        plt.savefig(rv, format="png")
+        plt.clf()
+        return """<img src="data:image/png;base64,%s"/>""" % rv.getvalue().encode("base64").strip()
+    finally:
+        plt.clf()
 
-import datetime as dt
-import os, sys
-import config
-import ee
-import jinja2
-import webapp2
-import cgi
+def dynamic_svg():
+    try:
+        plt.title("Dynamic SVG")
+        for i in range(5): plt.plot(sorted(numpy.random.randn(25)))
+        rv = StringIO.StringIO()
+        plt.savefig(rv, format="svg")
+        return rv.getvalue()
+    finally:
+        plt.clf()
 
-#Custom modules
-'''
-from my_python_lib import date_utils
-from my_python_lib import form_utils
-from my_python_lib import gridmet_anomaly
-'''
+if __name__ == "__main__":
+    print dynamic_png()
+    print dynamic_svg()
+else:
+    class MainHandler(webapp2.RequestHandler):
+        def get(self):
+            self.response.write("""<html><head/><body>""")
+            self.response.write(dynamic_png())
+            self.response.write(dynamic_svg())
+            self.response.write("""</body> </html>""")
 
-import gridmet_anomaly
-import date_utils, form_utils, graph_utils
-#media url containing js/css/img
-#Note: needs to be added to app.yaml
-MEDIA_URL = 'media/'
-
-
-jinja_environment = jinja2.Environment(
-	loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-
-
-def fix_path():
-    sys.path.append('/Users/bdaudert/my-python-lib')
-
-def check_form(form, fields_to_check):
-    '''
-    '''
-    form_errors = {}
-    for field in fields_to_check:
-        checker = getattr(form_utils, 'check_' + field)
-        err = checker(form)
-        if err:
-            form_errors[field] = err
-    return form_errors
-
-
-class MainPage(webapp2.RequestHandler):
-    def get(self):
-        """Request an image from Earth Engine and render it to a web page."""
-        ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
-
-        '''Set default start and end date'''
-        start_date = date_utils.set_back_date(14)
-        end_date = date_utils.set_back_date(7)
-        start_dt = date_utils.date_to_datetime(start_date)
-        end_dt = date_utils.date_to_datetime(end_date)
-        #start_dt = dt.datetime(2013, 12, 15)
-        #end_dt = dt.datetime(2013, 12, 31)
-        index_image = gridmet_anomaly.ppt_anomaly_func(start_dt, end_dt)
-        #Find max/min over all pixels for map legend generation
-        wusa = [[-125,24],[-125,50],[-66,24],[-66, 50]]
-        reduce_args = {
-            'reducer': ee.Reducer.max(),
-            'bestEffort': True,
-            'geometry': ee.Feature.Polygon(wusa),
-            'scale':4000
-        }
-        reduce_args['reducer'] = ee.Reducer.max()
-        mx = index_image.reduceRegion(**reduce_args).getInfo()['PPT']
-        reduce_args['reducer'] = ee.Reducer.min()
-        mn = index_image.reduceRegion(**reduce_args).getInfo()['PPT']
-        palette = '0000FF,00FF00,FFFF00,FF0000' #Blue/Green/Yellow/Red
-        mapid = index_image.getMapId({'min':mn, 'max':mx, 'palette':palette})
-        #graph_utils.colorbar_func('', palette=palette, min_value=mn, max_value=mx)
-        # These could be put directly into template.render, but it
-        # helps make the script more readable to pull them out here, especially
-        # if this is expanded to include more variables.
-        template_values = {
-                'MEDIA_URL':MEDIA_URL,
-                'mapid': mapid['mapid'],
-                'token': mapid['token'],
-                'start_date':start_date,
-                'end_date':end_date,
-                'max':mx,
-                'min':mn,
-                'palette':palette
-        }
-        template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(template_values))
-
-    def post(self):
-        """Request an image from Earth Engine and render it to a web page."""
-        ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
-        form_fields = self.request.arguments()
-        form_dict={}
-        for form_field in form_fields:
-            form_dict[form_field] = self.request.get(form_field)
-        #form_dict = dict((x,y) for x,y in self.request.get.arguments())
-        '''Get start/end dates from user'''
-        start_date = cgi.escape(form_dict['start_date'])
-        end_date = cgi.escape(form_dict['end_date'])
-        #Check that user dataes are valid
-        form_fields_to_check = ['start_date', 'end_date']
-        form_errors = check_form(form_dict,form_fields_to_check)
-        if form_errors:
-            template_values = {
-                'start_date':start_date,
-                'end_date':end_date,
-                'form_errors':form_errors
-            }
-            if 'start_date' in form_errors.keys() and form_errors['start_date']:
-                template_values['form_error_start_date'] = form_errors['start_date']
-            if 'end_date' in form_errors.keys() and form_errors['end_date']:
-                template_values['form_error_end_date'] = form_errors['end_date']
-        else:
-            start_dt = date_utils.date_to_datetime(start_date)
-            end_dt = date_utils.date_to_datetime(end_date)
-
-            index_image = gridmet_anomaly.ppt_anomaly_func(start_dt, end_dt)
-            #Find max/min over all pixels for map legend generation
-            wusa = [[-125,24],[-125,50],[-66,24],[-66, 50]]
-            reduce_args = {
-                'reducer': ee.Reducer.max(),
-                'bestEffort': True,
-                'geometry': ee.Feature.Polygon(wusa),
-                'scale':4000
-            }
-            reduce_args['reducer'] = ee.Reducer.max()
-            mx = index_image.reduceRegion(**reduce_args).getInfo()['PPT']
-            reduce_args['reducer'] = ee.Reducer.min()
-            mn = index_image.reduceRegion(**reduce_args).getInfo()['PPT']
-            ## Set color scheme before returning
-            palette = '0000FF,00FF00,FFFF00,FF0000' #Blue/Green/Yellow/Red
-            mapid = index_image.getMapId({'min':mx, 'max':mn, 'palette':palette})
-            # These could be put directly into template.render, but it
-            # helps make the script more readable to pull them out here, especially
-            # if this is expanded to include more variables.
-
-            template_values = {
-                'mapid': mapid['mapid'],
-                'token': mapid['token'],
-                'start_date':start_date,
-                'end_date':end_date,
-                'max':mx,
-                'min':mn,
-                'palette':palette
-            }
-        template = jinja_environment.get_template('index.html')
-        self.response.out.write(template.render(template_values))
-#NOTE:
-fix_path()
-app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
+    app = webapp2.WSGIApplication([
+        ('/', MainHandler)
+    ], debug=True)
