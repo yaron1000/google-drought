@@ -1,6 +1,15 @@
+/*
 body {
     background: #00688B;
     font-family: Verdana, sans-serif;
+}
+*/
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
 .container {
@@ -59,8 +68,7 @@ table.form td {
 table.sub-left {
     border-right:3px solid #00688B;
     background-color:#CCE0E0;
-    width:285px;
-    height:100px;
+    height:150px;
     margin:0px;
     padding:0px;
 }
@@ -72,6 +80,17 @@ table.sub-mid {
     width:285px;
     height:100px;
     margin:0px 0px 0px 5px;
+    padding:0px;
+}
+
+table.sub-right {
+    border-right:3px solid #00688B;
+    border-top:3px solid #00688B;
+    border-bottom:3px solid #00688B;
+    background-color:#CCE0E0;
+    width:285px;
+    height:100px;
+    margin:0px;
     padding:0px;
 }
 
@@ -129,7 +148,7 @@ input[value="Start Over"] {
 
 /* Classes */
 .gradient {
-    width: 958px;
+    width: 100%;
     color:#800000;
     background-color:#00688B;
     background-image: -webkit-linear-gradient(top, #00688B, #E0EEEE);
@@ -139,10 +158,21 @@ input[value="Start Over"] {
 }
 
 .map {
-    margin:0px 5px 0px 0px;
-    width: 650px;
-    height: 480px;
-    border:3px solid #00688B; 
+    /*margin:0px 5px 0px 0px;*/
+    width: 100%;
+    height:100%;
+    position: relative;
+    /*border:3px solid #00688B;*/ 
+}
+
+.menue {
+    z-index: 100;
+    position: absolute;
+    margin:0px 0px 0px 100px;
+    background-color: #00688B;
+    border: 1px #000 Solid;
+    padding: 5px;
+    width:600px;           
 }
 
 
@@ -205,8 +235,8 @@ http://www.openjs.com/scripts/ui/calendar/
 #loading {
   width: 100%;
   height: 100%;
-  top: 100px;
-  left: 100px;
+  top: 200px;
+  left: 200px;
   position: fixed;
   display: block;
   z-index: 99;
