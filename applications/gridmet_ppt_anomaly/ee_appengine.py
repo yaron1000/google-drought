@@ -23,6 +23,10 @@ from my_python_lib import gridmet_anomaly
 #import matplotlib
 import gridmet_anomaly
 import date_utils, form_utils, graph_utils
+#Deals withb Deadline excedance error
+from google.appengine.api import urlfetch
+urlfetch.set_default_fetch_deadline(120)
+
 #media url containing js/css/img
 #Note: needs to be added to app.yaml
 MEDIA_URL = 'media/'
@@ -65,8 +69,10 @@ class MainPage(webapp2.RequestHandler):
         #Format to 8 digit string
         if start_date:
             start_date = start_date.replace('/','').replace('-','').replace(':','')
+            start_date = start_date[0:4] + '-' + start_date[4:6] + '-' + start_date[6:8]
         if end_date:
             end_date = end_date.replace('/','').replace('-','').replace(':','')
+            end_date = end_date[0:4] + '-' + end_date[4:6] + '-' + end_date[6:8]
         return start_date, end_date
 
     def get_reducer_args(self, reduce_type):
@@ -139,18 +145,24 @@ class MainPage(webapp2.RequestHandler):
         template_values['start_date'] = start_date
         template_values['end_date'] = end_date
         mapid = None
-        try:
-            mapid = collection.getMapId({'min':mn, 'max':mx, 'palette':palette})
-        except Exception, e:
+        count = 0
+        #Five tries to get data
+        while count <5:
             try:
                 mapid = collection.getMapId({'min':mn, 'max':mx, 'palette':palette})
-            except:
-                template_values['run_error'] = str(e)
-                #self.response.out.write(template.render(template_values))
+                if mapid:
+                    template_values['mapid'] = mapid['mapid']
+                    template_values['token'] = mapid['token']
+                    break
+            except Exception, e:
+                count+=1
+                run_error = str(e)
+                continue
 
-        if mapid:
-            template_values['mapid'] = mapid['mapid']
-            template_values['token'] = mapid['token']
+        if not mapid and run_error:
+            #ee request failed five time, quit here
+            template_values['run_error'] = str(e)
+
         self.response.out.write(template.render(template_values))
 
     def post(self):
@@ -166,6 +178,7 @@ class MainPage(webapp2.RequestHandler):
         #form_dict = dict((x,y) for x,y in self.request.get.arguments())
         '''Get start/end dates from user'''
         start_date, end_date = self.get_start_end_date()
+        #start_date = form_dict['start_date']; end_date = form_dict['end_date']
         template_values['start_date'] = start_date
         template_values['end_date'] = end_date
         #Check that user dataes are valid
@@ -188,19 +201,23 @@ class MainPage(webapp2.RequestHandler):
             mn = collection.reduceRegion(**reduce_args_mn).getInfo()['pr']
             template_values['max'] = mx
             template_values['min'] = mn
-            ## Set color scheme before returning
-            mapid = None
-            try:
-                mapid = collection.getMapId({'min':mn, 'max':mx, 'palette':palette})
-            except Exception, e:
+            mapid = None; count = 0
+            #Five tries to get data
+            while count <5:
                 try:
                     mapid = collection.getMapId({'min':mn, 'max':mx, 'palette':palette})
-                except:
-                    template_values['run_error'] = str(e)
-                    self.response.out.write(template.render(template_values))
-        if mapid:
-            template_values['mapid'] = mapid['mapid']
-            template_values['token'] = mapid['token']
+                    if mapid:
+                        template_values['mapid'] = mapid['mapid']
+                        template_values['token'] = mapid['token']
+                        break
+                except Exception, e:
+                    count+=1
+                    run_error = str(e)
+                    continue
+
+            if not mapid and run_error:
+                #ee request failed five time, quit here
+                template_values['run_error'] = str(e)
         self.response.out.write(template.render(template_values))
 #NOTE:
 fix_path()
