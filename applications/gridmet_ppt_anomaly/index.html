@@ -96,21 +96,21 @@ for details.
     <div class="menue">
     <table>
     <tbody>
-    <td valign="top" width="285px" height="150px">
+    <td valign="top" height="150px">
         <table class="sub-left">
         <tbody>
         <tr>
         <td>
-        <input type="submit" value="Start Over" onclick="window.location=''">
+        <input type="submit" value="Start Over" onclick="window.location='/'">
         <br />
-        <input type="submit" value="Run" name="gridmetForm" form="gridmetForm">
+        <input type="submit" value="Run" name="gridmetForm" form="gridmetForm" action="/">
         </td>
         </tr>
         {% if mapid %}
         <tr>
         <td>
         <h3>Click to see data values!</h4>
-        <canvas width="320" height="30" id="colorbar"></canvas>
+        <canvas height="30" id="colorbar"></canvas>
         <!--<script type="text/javascript">set_color_bar("{{min}}","{{max}}","{{palette}}")</script>-->
         <script type="text/javascript">graph_utils.set_color_bar("{{min}}","{{max}}","{{palette}}")</script> 
         </td>
@@ -119,12 +119,12 @@ for details.
         </tbody>
         </table>
     </td>
-    <td valign="top" width="285px" height="150px">
+    <td valign="top" height="150px">
         <table class="sub-left">
         <tbody>
         <tr>
         <td>
-        <form id="gridmetForm" action="#" method="post" onsubmit="jutils.show_loading()">
+        <form id="gridmetForm" action="/" method="post" onsubmit="jutils.show_loading()">
         <table class="form">
         <tbody>
         <tr>
