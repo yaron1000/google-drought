@@ -4,7 +4,6 @@
 # If successful, shows a single web page with the SRTM DEM
 # displayed in a Google Map.  See accompanying README file for
 # instructions on how to set up authentication.
-
 import os
 import cgi
 import config
@@ -233,6 +232,7 @@ MAIN_PAGE_HTML = """<html>
   <body>
       <div id="wrapper">
         <div id="menu">
+          <p> Click on map to add marker (click again to remove), or manually add Lat,Lon pair </p>
           <form id="NDVI_Form" action="/timeseries" method="post" > 
           Lat/Lons: <input size="80" type="text" name='lat_lng_string' id="lat_lng_string" value="" /></form>
           <input type="submit" class="button" value="Get NDVI Time Series for Marker Locations" name="gridmetForm" form="NDVI_Form" />
@@ -265,16 +265,15 @@ class MainPage(webapp2.RequestHandler):
         #### A function to compute NDVI for a Landsat image.
 
 class Timeseries(webapp2.RequestHandler):
-    def post(self):
-
+    def post(self):        
         """Request an image from Earth Engine and render it to a web page."""
         ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
 
         #### Grabs data from "name" in the HTML form tags
         # factor = float(cgi.escape(self.request.get('factor')))
         # startdate = cgi.escape(self.request.get('startdate'))
-        startdate = '2012-01-01'
-        enddate = '2012-12-30'
+        startdate = '2011-01-01'
+        enddate = '2014-12-30'
 
         ##GRABS THE LAT LONG STRING FROM HTML FORM
         UserLatLong = cgi.escape(self.request.get('lat_lng_string'))
@@ -290,18 +289,31 @@ class Timeseries(webapp2.RequestHandler):
         # lat_lon_tuple = zip(UserLatLongX[0::2], UserLatLongX[1::2])
         # print(lat_lon_tuple)
 
+        #### CLOUD MASK FUNCTION 
+        def common_area_func(refl_toa):
+            #### Common area
+            common_area = refl_toa.mask().reduce(ee.call("Reducer.and"))
+            refl_toa = refl_toa.mask(common_area)
+            #### Cloud mask
+            cloud_mask = ee.Algorithms.Landsat.simpleCloudScore(refl_toa) \
+                .select(['cloud']).lt(ee.Image.constant(50))
+            return refl_toa.mask(cloud_mask.mask(cloud_mask))
+
+        #### Function to calc NDVI using .map method
+        def ndvi_calc_L5L7(refl_toa): 
+            refl_toa = common_area_func(refl_toa)
+            ndvi_img = refl_toa.select("B4", "B3").normalizedDifference().select([0],['NDVI'])
+            return ee.Image(ndvi_img.copyProperties(refl_toa,['system:index','system:time_start','system_time_end']))
+
+        def ndvi_calc_L8(refl_toa): 
+            refl_toa = common_area_func(refl_toa)
+            ndvi_img = refl_toa.select("B5", "B4").normalizedDifference().select([0],['NDVI'])
+            return ee.Image(ndvi_img.copyProperties(refl_toa,['system:index','system:time_start','system_time_end']))                
+
         master_dict=[]
-        for i in range(len(UserLat)):
+        for i in range(len(UserLat)):          
 
-            #### Function to calc NDVI using .map method
-            point = ee.Feature.Point(float(UserLong[i]),float(UserLat[i]));
-            def ndvi_calc_L5L7(refl_toa): 
-                ndvi_img = refl_toa.select("B4", "B3").normalizedDifference().select([0],['NDVI'])
-                return ee.Image(ndvi_img.copyProperties(refl_toa,['system:index','system:time_start','system_time_end']))
-
-            def ndvi_calc_L8(refl_toa): 
-                ndvi_img = refl_toa.select("B5", "B4").normalizedDifference().select([0],['NDVI'])
-                return ee.Image(ndvi_img.copyProperties(refl_toa,['system:index','system:time_start','system_time_end']))
+            point = ee.Feature.Point(float(UserLong[i]),float(UserLat[i]));            
 
             #### MERGE COLLECTIONS FOR TIME PERIOD AND LAT/LON POINT
             l5_coll = ee.ImageCollection('LT5_L1T_TOA').filterBounds(point).filterDate(startdate, enddate);
@@ -310,14 +322,25 @@ class Timeseries(webapp2.RequestHandler):
             l7_coll_ndvi = l7_coll.map(ndvi_calc_L5L7)
             l8_coll = ee.ImageCollection('LC8_L1T_TOA').filterBounds(point).filterDate(startdate, enddate);
             l8_coll_ndvi = l8_coll.map(ndvi_calc_L8)
-
             #### Merge NDVI image collections 
-            image_coll_ndvi_mrg_L5L7 = ee.ImageCollection(l5_coll_ndvi.merge(l7_coll_ndvi));
+            image_coll_ndvi_mrg_L5L7 = ee.ImageCollection(l5_coll_ndvi.merge(l7_coll_ndvi));           
             image_coll_ndvi_mrg_L5L7L8 = ee.ImageCollection(image_coll_ndvi_mrg_L5L7.merge(l8_coll_ndvi));
-
+            
             #### Data in list format
-            extract = image_coll_ndvi_mrg_L5L7L8.getRegion(point,1).getInfo();
+            t0 = time.time()
+            while True:
+                try:
+                    extract = image_coll_ndvi_mrg_L5L7L8.getRegion(point,1).getInfo();
+                    break
+                except:
+                    print("   Resending...")
+                    time.sleep(0.5)
+                    pass
             extract.pop(0) #remove first row of list ["id","longitude","latitude","time","NDVI"]
+
+            t1 = time.time()
+            print('elapsed time = {0} seconds'.format(t1-t0))
+            # extract.pop(0) #remove first row of list ["id","longitude","latitude","time","NDVI"]
             # extractslice = [arr[i][0:2] for i in range(0,2)]
             # extract = list(zip(*extract)[4])
             # for sublist in extract:
@@ -375,10 +398,15 @@ class Timeseries(webapp2.RequestHandler):
             temp_dict = {}
             temp_dict['name'] = str(float(UserLat[i])) + ',' + str(float(UserLong[i]))
             temp_dict['data'] = TimeSeries_list
+            # temp_dict = sorted(temp_dict,reverse=True)
+            # print(temp_dict)
+            # sorted(temp_dict,reverse=True)
+            # print(temp_dict)
             master_dict.append(temp_dict)
+            
         
         master_dict_json = json.dumps(master_dict)
-        
+        # print(master_dict_json)
         # print master_dict_json
 
 
